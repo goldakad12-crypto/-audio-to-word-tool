@@ -1,6 +1,4 @@
 streamlit
-openai-whisper
 python-docx
-torch
-torchvision
-torchaudio
+groq
+
