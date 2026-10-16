@@ -11,7 +11,6 @@ st.set_page_config(page_title="منصة التفريغ والتحليل الذك
 st.title("🎙️ منصة التفريغ الصوتي والتحليل الذكي")
 st.caption("أداة احترافية سريعة لتفريغ التسجيلات، تنظيف النصوص، والتحويل الفوري إلى Word و SRT.")
 
-# جلب المفتاح تلقائياً من إعدادات المنصة الآمنة في الخلفية
 try:
     api_key = st.secrets["GROQ_API_KEY"]
 except Exception:
@@ -39,7 +38,7 @@ if audio_file is not None:
     
     if st.button("🚀 بدء التفريغ والتحليل الفوري"):
         if not api_key:
-            st.error("⚠️ تنبيه للمطور: لم يتم إعداد مفتاح الـ API في إعدادات المنصة (Secrets).")
+            st.error("⚠️ تنبيه: لم يتم إعداد مفتاح الـ API في إعدادات المنصة (Secrets).")
         else:
             with st.spinner("جاري معالجة الملف الصوتي عبر السحابة الذكية..."):
                 with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(audio_file.name)[1]) as tmp_file:
@@ -49,9 +48,10 @@ if audio_file is not None:
                 try:
                     client = Groq(api_key=api_key)
                     with open(tmp_path, "rb") as file:
+                        # استخدام النسخة السريعة والمستقرة Turbo
                         transcription = client.audio.transcriptions.create(
                             file=(audio_file.name, file.read()),
-                            model="whisper-large-v3",
+                            model="whisper-large-v3-turbo",
                             response_format="verbose_json",
                             language="ar"
                         )
