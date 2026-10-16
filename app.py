@@ -8,12 +8,14 @@ from groq import Groq
 
 st.set_page_config(page_title="منصة التفريغ والتحليل الذكي", page_icon="🎙️", layout="wide")
 
-st.title("🎙️ منصة التفريغ الصوتي والتحليل الذكي (عبر السحابة)")
-st.caption("أداة سريعة وخفيفة لتفريغ التسجيلات، تنظيف النصوص، والتحويل إلى Word و SRT.")
+st.title("🎙️ منصة التفريغ الصوتي والتحليل الذكي")
+st.caption("أداة احترافية سريعة لتفريغ التسجيلات، تنظيف النصوص، والتحويل الفوري إلى Word و SRT.")
 
-# إدخال مفتاح الـ API من الشريط الجانبي
-api_key = st.sidebar.text_input("أدخل مفتاح Groq API Key", type="password")
-st.sidebar.markdown("[احصل على مفتاح مجاني من هنا (Groq Console)](https://console.groq.com/keys)")
+# جلب المفتاح تلقائياً من إعدادات المنصة الآمنة في الخلفية
+try:
+    api_key = st.secrets["GROQ_API_KEY"]
+except Exception:
+    api_key = None
 
 def clean_arabic_text(text):
     if not text:
@@ -35,11 +37,11 @@ audio_file = st.file_uploader("قم برفع الملف الصوتي أو الت
 if audio_file is not None:
     st.audio(audio_file)
     
-    if st.button("🚀 بدء التفريغ السريع"):
+    if st.button("🚀 بدء التفريغ والتحليل الفوري"):
         if not api_key:
-            st.error("الرجاء إدخال مفتاح Groq API Key في الشريط الجانبي أولاً لتبدأ المعالجة.")
+            st.error("⚠️ تنبيه للمطور: لم يتم إعداد مفتاح الـ API في إعدادات المنصة (Secrets).")
         else:
-            with st.spinner("جاري إرسال الملف ومعالجته عبر السحابة..."):
+            with st.spinner("جاري معالجة الملف الصوتي عبر السحابة الذكية..."):
                 with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(audio_file.name)[1]) as tmp_file:
                     tmp_file.write(audio_file.read())
                     tmp_path = tmp_file.name
